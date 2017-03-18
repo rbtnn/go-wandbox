@@ -35,7 +35,7 @@ type WandboxOutputList struct {
 	DisplayCompileCommand string `json:"display-compile-command"`
 }
 
-func executeCompile(in WandboxInput) {
+func executeCompile(in *WandboxInput) {
 	bytes, err := json.Marshal(in)
 	if err != nil {
 		return
@@ -91,7 +91,7 @@ func main() {
 			}
 			data = string(xs)
 		}
-		executeCompile(WandboxInput{
+		executeCompile(&WandboxInput{
 			data,
 			*compiler,
 		})
