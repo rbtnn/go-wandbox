@@ -8,7 +8,7 @@
     $go get github.com/rbtnn/go-wandbox/cmd/wandbox
     $cat ~/a.vim
     echo "hi"
-    $wandbox -compiler vim-head -source ~/a.vim
+    $wandbox -source ~/a.vim
     hi
     $wandbox -compiler vim-head -code "echo 'hi'"
     hi

@@ -3,11 +3,13 @@ package main
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
 	"flag"
 	"fmt"
 	"io/ioutil"
 	"net/http"
 	"os"
+	"path/filepath"
 	"sort"
 )
 
@@ -34,6 +36,76 @@ type WandboxOutputList struct {
 	Name                  string `json:"name"`
 	Language              string `json:"language"`
 	DisplayCompileCommand string `json:"display-compile-command"`
+}
+
+func detectLatestCompiler(source string) (string, error) {
+	ext := filepath.Ext(source)
+	name := ""
+	switch ext {
+	case ".c":
+		name = "C"
+	case ".C", ".cc", ".cpp", ".cxx":
+		name = "C++"
+	case ".cs":
+		name = "C#"
+	case ".coffee":
+		name = "CoffeeScript"
+	case ".d":
+		name = "D"
+	case ".erl":
+		name = "Erlang"
+	case ".ex":
+		name = "Elixir"
+	case ".go":
+		name = "Go"
+	case ".groovy":
+		name = "Groovy"
+	case ".hs":
+		name = "Haskell"
+	case ".java":
+		name = "Java"
+	case ".js":
+		name = "JavaScript"
+	case ".lazyk":
+		name = "Lazy K"
+	case ".l", ".lsp", ".lisp":
+		name = "Lisp"
+	case ".lua":
+		name = "Lua"
+	case ".ml":
+		name = "OCaml"
+	case ".pas":
+		name = "Pascal"
+	case ".php":
+		name = "PHP"
+	case ".pl":
+		name = "Perl"
+	case ".py":
+		name = "Python"
+	case ".rb":
+		name = "Ruby"
+	case ".rs":
+		name = "Rust"
+	case ".scala":
+		name = "Scala"
+	case ".sh", ".bash":
+		name = "Bash script"
+	case ".sqlite3", ".sqlite", ".sql":
+		name = "SQL"
+	case ".swift":
+		name = "Swift"
+	case ".vim":
+		name = "Vim script"
+	}
+	m, err := getList()
+	if err != nil {
+		return "", err
+	}
+	if value, ok := m[name]; ok {
+		return value[0].Name, nil
+	} else {
+		return "", errors.New(ext + " not supported")
+	}
 }
 
 func executeCompile(data, compiler string) error {
@@ -64,25 +136,32 @@ func executeCompile(data, compiler string) error {
 	return nil
 }
 
-func executeList() error {
+func getList() (map[string][]WandboxOutputList, error) {
 	req, err := http.NewRequest("GET", listURL, nil)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	defer resp.Body.Close()
 	var out []WandboxOutputList
+	// bs, _ := ioutil.ReadAll(resp.Body)
+	// fmt.Println(string(bs))
 	err = json.NewDecoder(resp.Body).Decode(&out)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	m := map[string][]WandboxOutputList{}
 	for _, x := range out {
 		m[x.Language] = append(m[x.Language], x)
 	}
+	return m, nil
+}
+
+func executeList() error {
+	m, _ := getList()
 	var keys []string
 	for key := range m {
 		keys = append(keys, key)
@@ -127,6 +206,13 @@ func run() int {
 				return 1
 			}
 			data = string(xs)
+			if compiler == "" {
+				compiler, err = detectLatestCompiler(source)
+				if err != nil {
+					fmt.Fprintf(os.Stderr, "%s: detect latest compiler: %v\n", os.Args[0], err)
+					return 1
+				}
+			}
 		} else {
 			flag.Usage()
 			return 0
