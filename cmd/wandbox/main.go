@@ -9,9 +9,11 @@ import (
 	"strings"
 )
 
-const method = "POST"
-const list_url = "http://melpon.org/wandbox/api/list.json"
-const compile_url = "http://melpon.org/wandbox/api/compile.json"
+const (
+	method      = "POST"
+	list_url    = "http://melpon.org/wandbox/api/list.json"
+	compile_url = "http://melpon.org/wandbox/api/compile.json"
+)
 
 type WandboxInput struct {
 	Code     string `json:"code"`
