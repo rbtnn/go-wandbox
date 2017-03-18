@@ -25,7 +25,9 @@ type WandboxOutputCompile struct {
 }
 
 type WandboxOutputList struct {
-	Name string `json:"name"`
+	Name                  string `json:"name"`
+	Language              string `json:"language"`
+	DisplayCompileCommand string `json:"display-compile-command"`
 }
 
 func execute_compile(in WandboxInput) {
@@ -50,8 +52,17 @@ func execute_list() {
 	bs, _ := ioutil.ReadAll(resp.Body)
 	var out []WandboxOutputList
 	json.Unmarshal(bs, &out)
-	for _, value := range out {
-		fmt.Println(value.Name)
+	var m map[string][]WandboxOutputList = map[string][]WandboxOutputList{}
+	for _, x := range out {
+		m[x.Language] = append(m[x.Language], x)
+	}
+	for key, compilers := range m {
+		for i, x := range compilers {
+			if i == 0 {
+				fmt.Println("[" + key + "]")
+			}
+			fmt.Println("  " + x.Name)
+		}
 	}
 }
 
