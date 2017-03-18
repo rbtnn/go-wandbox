@@ -69,7 +69,7 @@ func executeList() error {
 	if err != nil {
 		return err
 	}
-	resp, _ := (&http.Client{}).Do(req)
+	resp, _ := http.DefaultClient.Do(req)
 	defer resp.Body.Close()
 	bs, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
