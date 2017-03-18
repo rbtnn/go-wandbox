@@ -111,24 +111,27 @@ func run() int {
 	if list {
 		err := executeList()
 		if err != nil {
-			fmt.Fprintf(os.Stderr, "%s: list error: %v", err)
+			fmt.Fprintf(os.Stderr, "%s: list error: %v\n", os.Args[0], err)
 			return 1
 		}
 	} else {
 		data := ""
-		if 0 < len(code) {
+		if code != "" {
 			data = code
-		} else {
+		} else if source != "" {
 			xs, err := ioutil.ReadFile(source)
 			if err != nil {
-				fmt.Fprintf(os.Stderr, "%s: read file: %v", err)
+				fmt.Fprintf(os.Stderr, "%s: read file: %v\n", os.Args[0], err)
 				return 1
 			}
 			data = string(xs)
+		} else {
+			flag.Usage()
+			return 0
 		}
 		err := executeCompile(data, compiler)
 		if err != nil {
-			fmt.Fprintf(os.Stderr, "%s: compile error: %v", err)
+			fmt.Fprintf(os.Stderr, "%s: compile error: %v\n", os.Args[0], err)
 			return 1
 		}
 	}
