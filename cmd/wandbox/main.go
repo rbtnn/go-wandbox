@@ -41,12 +41,12 @@ func executeCompile(data, compiler string) error {
 		data,
 		compiler,
 	}
-	b, err := json.Marshal(in)
+	var buf bytes.Buffer
+	err := json.NewEncoder(&buf).Encode(in)
 	if err != nil {
 		return err
 	}
-	buf := bytes.NewBuffer(b)
-	req, err := http.NewRequest("POST", compileURL, buf)
+	req, err := http.NewRequest("POST", compileURL, &buf)
 	if err != nil {
 		return err
 	}
