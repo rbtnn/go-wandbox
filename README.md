@@ -1,7 +1,7 @@
 
 # go-wandbox
 
-wandbox CLI
+[wandbox](http://melpon.org/wandbox) CLI
 
 ## usage
 
