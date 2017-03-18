@@ -8,9 +8,9 @@
     $go get github.com/rbtnn/go-wandbox/cmd/wandbox
     $cat ~/a.vim
     echo "hi"
-    $./wandbox -compiler vim-head -source ~/a.vim
+    $wandbox -compiler vim-head -source ~/a.vim
     hi
-    $./wandbox -compiler vim-head -code "echo 'hi'"
+    $wandbox -compiler vim-head -code "echo 'hi'"
     hi
     $wandbox -help
     Usage of wandbox:
@@ -23,7 +23,7 @@
       -source string
             source file
 
-    $./wandbox -list
+    $wandbox -list
     [Elixir]
       elixir-head
       elixir-1.4.1
