@@ -9,17 +9,22 @@
     go build -o wandbox src/main.go
     $cat ~/a.vim
     echo "hi"
-    $./wandbox -c vim-head -f ~/a.vim
+    $./wandbox -compiler vim-head -source ~/a.vim
     hi
-    $./wandbox --help
+    $./wandbox -compiler vim-head -code "echo 'hi'"
+    hi
+    $./wandbox -help
     Usage of ./wandbox:
-      -c string
+      -code string
+            code
+      -compiler string
             compiler
-      -f string
-            source file
       -list
             compiler list
-    $./wandbox --list
+      -source string
+            source file
+
+    $./wandbox -list
     gcc-head-c
     gcc-6.3.0-c
     gcc-6.2.0-c
@@ -35,3 +40,4 @@
     gcc-4.8.5-c
     gcc-4.8.4-c
     gcc-4.8.3-c
+    ...

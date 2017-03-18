@@ -56,23 +56,29 @@ func execute_list() {
 }
 
 func main() {
-	var f = flag.String("f", "", "source file")
-	var c = flag.String("c", "", "compiler")
-	var l = flag.Bool("list", false, "compiler list")
+	var source = flag.String("source", "", "source file")
+	var code = flag.String("code", "", "code")
+	var compiler = flag.String("compiler", "", "compiler")
+	var list = flag.Bool("list", false, "compiler list")
 	flag.Parse()
 
-	if *l {
+	if *list {
 		execute_list()
 	} else {
-		xs, err := ioutil.ReadFile(*f)
-		if err != nil {
-			return
+		data := ""
+		if 0 < len(*code) {
+			data = *code
+		} else {
+			xs, err := ioutil.ReadFile(*source)
+			if err != nil {
+				return
+			}
+			data = string(xs)
 		}
-		in := WandboxInput{
-			string(xs),
-			*c,
-		}
-		execute_compile(in)
+		execute_compile(WandboxInput{
+			data,
+			*compiler,
+		})
 	}
 
 }
