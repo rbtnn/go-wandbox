@@ -100,13 +100,16 @@ func executeList() error {
 }
 
 func run() int {
-	var source = flag.String("source", "", "source file")
-	var code = flag.String("code", "", "code")
-	var compiler = flag.String("compiler", "", "compiler")
-	var list = flag.Bool("list", false, "compiler list")
+	var source, code, compiler string
+	var list bool
+
+	flag.StringVar(&source, "source", "", "source file")
+	flag.StringVar(&code, "code", "", "code")
+	flag.StringVar(&compiler, "compiler", "", "compiler")
+	flag.BoolVar(&list, "list", false, "compiler list")
 	flag.Parse()
 
-	if *list {
+	if list {
 		err := executeList()
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "%s: list error: %v", err)
@@ -114,17 +117,17 @@ func run() int {
 		}
 	} else {
 		data := ""
-		if 0 < len(*code) {
-			data = *code
+		if 0 < len(code) {
+			data = code
 		} else {
-			xs, err := ioutil.ReadFile(*source)
+			xs, err := ioutil.ReadFile(source)
 			if err != nil {
 				fmt.Fprintf(os.Stderr, "%s: read file: %v", err)
 				return 1
 			}
 			data = string(xs)
 		}
-		err := executeCompile(data, *compiler)
+		err := executeCompile(data, compiler)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "%s: compile error: %v", err)
 			return 1
