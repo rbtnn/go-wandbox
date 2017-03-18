@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
+	"sort"
 	"strings"
 )
 
@@ -87,7 +88,13 @@ func executeList() error {
 	for _, x := range out {
 		m[x.Language] = append(m[x.Language], x)
 	}
-	for key, compilers := range m {
+	var keys []string
+	for key := range m {
+		keys = append(keys, key)
+	}
+	sort.Strings(keys)
+	for _, key := range keys {
+		compilers := m[key]
 		for i, x := range compilers {
 			if i == 0 {
 				fmt.Println("[" + key + "]")
