@@ -19,4 +19,19 @@ wandbox CLI
             source file
       -list
             compiler list
-
+    $./wandbox --list
+    gcc-head-c
+    gcc-6.3.0-c
+    gcc-6.2.0-c
+    gcc-6.1.0-c
+    gcc-5.4.0-c
+    gcc-5.3.0-c
+    gcc-5.2.0-c
+    gcc-5.1.0-c
+    gcc-4.9.3-c
+    gcc-4.9.2-c
+    gcc-4.9.1-c
+    gcc-4.9.0-c
+    gcc-4.8.5-c
+    gcc-4.8.4-c
+    gcc-4.8.3-c
