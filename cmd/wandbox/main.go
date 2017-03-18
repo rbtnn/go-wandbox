@@ -11,7 +11,6 @@ import (
 )
 
 const (
-	method     = "POST"
 	listURL    = "http://melpon.org/wandbox/api/list.json"
 	compileURL = "http://melpon.org/wandbox/api/compile.json"
 )
@@ -46,7 +45,7 @@ func executeCompile(data, compiler string) error {
 		return err
 	}
 	reader := strings.NewReader(string(bytes))
-	req, err := http.NewRequest(method, compileURL, reader)
+	req, err := http.NewRequest("POST", compileURL, reader)
 	if err != nil {
 		return err
 	}
