@@ -15,17 +15,20 @@ const (
 	compileURL = "http://melpon.org/wandbox/api/compile.json"
 )
 
+// WandboxInput mean request structure to the compile.
 type WandboxInput struct {
 	Code     string `json:"code"`
 	Compiler string `json:"compiler"`
 }
 
+// WandboxOutputCompile mean response structure from the compile.
 type WandboxOutputCompile struct {
 	ProgramError   string `json:"program_error"`
 	ProgramMessage string `json:"program_message"`
 	Status         string `json:"status"`
 }
 
+// WandboxOutputList mean response structure from the list.
 type WandboxOutputList struct {
 	Name                  string `json:"name"`
 	Language              string `json:"language"`
