@@ -10,9 +10,9 @@ import (
 )
 
 const (
-	method      = "POST"
-	list_url    = "http://melpon.org/wandbox/api/list.json"
-	compile_url = "http://melpon.org/wandbox/api/compile.json"
+	method     = "POST"
+	listURL    = "http://melpon.org/wandbox/api/list.json"
+	compileURL = "http://melpon.org/wandbox/api/compile.json"
 )
 
 type WandboxInput struct {
@@ -32,13 +32,13 @@ type WandboxOutputList struct {
 	DisplayCompileCommand string `json:"display-compile-command"`
 }
 
-func execute_compile(in WandboxInput) {
+func executeCompile(in WandboxInput) {
 	bytes, err := json.Marshal(in)
 	if err != nil {
 		return
 	}
 	reader := strings.NewReader(string(bytes))
-	req, _ := http.NewRequest(method, compile_url, reader)
+	req, _ := http.NewRequest(method, compileURL, reader)
 	resp, _ := (&http.Client{}).Do(req)
 	defer resp.Body.Close()
 	bs, _ := ioutil.ReadAll(resp.Body)
@@ -47,8 +47,8 @@ func execute_compile(in WandboxInput) {
 	fmt.Println(out.ProgramMessage)
 }
 
-func execute_list() {
-	req, _ := http.NewRequest("GET", list_url, nil)
+func executeList() {
+	req, _ := http.NewRequest("GET", listURL, nil)
 	resp, _ := (&http.Client{}).Do(req)
 	defer resp.Body.Close()
 	bs, _ := ioutil.ReadAll(resp.Body)
@@ -76,7 +76,7 @@ func main() {
 	flag.Parse()
 
 	if *list {
-		execute_list()
+		executeList()
 	} else {
 		data := ""
 		if 0 < len(*code) {
@@ -88,7 +88,7 @@ func main() {
 			}
 			data = string(xs)
 		}
-		execute_compile(WandboxInput{
+		executeCompile(WandboxInput{
 			data,
 			*compiler,
 		})
