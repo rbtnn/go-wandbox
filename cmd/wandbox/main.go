@@ -57,7 +57,7 @@ func executeList() {
 	bs, _ := ioutil.ReadAll(resp.Body)
 	var out []WandboxOutputList
 	json.Unmarshal(bs, &out)
-	var m map[string][]WandboxOutputList = map[string][]WandboxOutputList{}
+	m := map[string][]WandboxOutputList{}
 	for _, x := range out {
 		m[x.Language] = append(m[x.Language], x)
 	}
