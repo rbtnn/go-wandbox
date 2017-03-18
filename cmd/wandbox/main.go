@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"os"
 	"strings"
 )
 
@@ -35,7 +36,11 @@ type WandboxOutputList struct {
 	DisplayCompileCommand string `json:"display-compile-command"`
 }
 
-func executeCompile(in *WandboxInput) error {
+func executeCompile(data, compiler string) error {
+	in := &WandboxInput{
+		data,
+		compiler,
+	}
 	bytes, err := json.Marshal(in)
 	if err != nil {
 		return err
@@ -94,7 +99,7 @@ func executeList() error {
 	return nil
 }
 
-func main() {
+func run() int {
 	var source = flag.String("source", "", "source file")
 	var code = flag.String("code", "", "code")
 	var compiler = flag.String("compiler", "", "compiler")
@@ -102,7 +107,11 @@ func main() {
 	flag.Parse()
 
 	if *list {
-		executeList()
+		err := executeList()
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "%s: list error: %v", err)
+			return 1
+		}
 	} else {
 		data := ""
 		if 0 < len(*code) {
@@ -110,14 +119,20 @@ func main() {
 		} else {
 			xs, err := ioutil.ReadFile(*source)
 			if err != nil {
-				return
+				fmt.Fprintf(os.Stderr, "%s: read file: %v", err)
+				return 1
 			}
 			data = string(xs)
 		}
-		executeCompile(&WandboxInput{
-			data,
-			*compiler,
-		})
+		err := executeCompile(data, *compiler)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "%s: compile error: %v", err)
+			return 1
+		}
 	}
+	return 0
+}
 
+func main() {
+	os.Exit(run())
 }
