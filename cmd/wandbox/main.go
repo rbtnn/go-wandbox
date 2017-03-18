@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"encoding/json"
 	"flag"
 	"fmt"
@@ -8,7 +9,6 @@ import (
 	"net/http"
 	"os"
 	"sort"
-	"strings"
 )
 
 const (
@@ -41,16 +41,16 @@ func executeCompile(data, compiler string) error {
 		data,
 		compiler,
 	}
-	bytes, err := json.Marshal(in)
+	b, err := json.Marshal(in)
 	if err != nil {
 		return err
 	}
-	reader := strings.NewReader(string(bytes))
-	req, err := http.NewRequest("POST", compileURL, reader)
+	buf := bytes.NewBuffer(b)
+	req, err := http.NewRequest("POST", compileURL, buf)
 	if err != nil {
 		return err
 	}
-	resp, err := (&http.Client{}).Do(req)
+	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
 		return err
 	}
