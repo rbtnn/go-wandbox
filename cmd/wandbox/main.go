@@ -55,12 +55,8 @@ func executeCompile(data, compiler string) error {
 		return err
 	}
 	defer resp.Body.Close()
-	bs, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return err
-	}
 	var out WandboxOutputCompile
-	err = json.Unmarshal(bs, &out)
+	err = json.NewDecoder(resp.Body).Decode(&out)
 	if err != nil {
 		return err
 	}
