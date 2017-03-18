@@ -71,12 +71,8 @@ func executeList() error {
 	}
 	resp, _ := http.DefaultClient.Do(req)
 	defer resp.Body.Close()
-	bs, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return err
-	}
 	var out []WandboxOutputList
-	err = json.Unmarshal(bs, &out)
+	err = json.NewDecoder(resp.Body).Decode(&out)
 	if err != nil {
 		return err
 	}
