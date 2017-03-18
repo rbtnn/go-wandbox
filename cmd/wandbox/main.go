@@ -35,28 +35,50 @@ type WandboxOutputList struct {
 	DisplayCompileCommand string `json:"display-compile-command"`
 }
 
-func executeCompile(in *WandboxInput) {
+func executeCompile(in *WandboxInput) error {
 	bytes, err := json.Marshal(in)
 	if err != nil {
-		return
+		return err
 	}
 	reader := strings.NewReader(string(bytes))
-	req, _ := http.NewRequest(method, compileURL, reader)
-	resp, _ := (&http.Client{}).Do(req)
+	req, err := http.NewRequest(method, compileURL, reader)
+	if err != nil {
+		return err
+	}
+	resp, err := (&http.Client{}).Do(req)
+	if err != nil {
+		return err
+	}
 	defer resp.Body.Close()
-	bs, _ := ioutil.ReadAll(resp.Body)
+	bs, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return err
+	}
 	var out WandboxOutputCompile
-	json.Unmarshal(bs, &out)
+	err = json.Unmarshal(bs, &out)
+	if err != nil {
+		return err
+	}
 	fmt.Println(out.ProgramMessage)
+	return nil
 }
 
-func executeList() {
-	req, _ := http.NewRequest("GET", listURL, nil)
+func executeList() error {
+	req, err := http.NewRequest("GET", listURL, nil)
+	if err != nil {
+		return err
+	}
 	resp, _ := (&http.Client{}).Do(req)
 	defer resp.Body.Close()
-	bs, _ := ioutil.ReadAll(resp.Body)
+	bs, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return err
+	}
 	var out []WandboxOutputList
-	json.Unmarshal(bs, &out)
+	err = json.Unmarshal(bs, &out)
+	if err != nil {
+		return err
+	}
 	m := map[string][]WandboxOutputList{}
 	for _, x := range out {
 		m[x.Language] = append(m[x.Language], x)
@@ -69,6 +91,7 @@ func executeList() {
 			fmt.Println("  " + x.Name)
 		}
 	}
+	return nil
 }
 
 func main() {
