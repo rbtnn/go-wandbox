@@ -14,8 +14,8 @@ import (
 )
 
 const (
-	listURL    = "http://melpon.org/wandbox/api/list.json"
-	compileURL = "http://melpon.org/wandbox/api/compile.json"
+	listURL    = "https://wandbox.org/api/list.json"
+	compileURL = "https://wandbox.org/api/compile.json"
 )
 
 // WandboxInput mean request structure to the compile.
